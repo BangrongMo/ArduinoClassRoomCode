@@ -1,0 +1,42 @@
+/*
+ * 中断中，delay函数失效
+ * 因此，为了延长呼吸灯时间，可增加for循环次数，
+ * 并且用map函数映射到较小的值
+ */
+int led_pin = 5;
+const byte interruptPin = 3;
+volatile byte state = LOW;
+int count=0;
+void setup() {
+  pinMode(led_pin, OUTPUT);
+  pinMode(interruptPin, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(interruptPin),breath_led, RISING);
+  Serial.begin(9600);
+  // put your setup code here, to run once:
+
+}
+
+void loop() {
+
+  // put your main code here, to run repeatedly:
+
+}
+void breath_led(){
+  int in;
+    for (int index = 1; index < 768; index++) {
+      in = map(index,0,1023,0,255);
+      analogWrite(led_pin, in);
+
+      Serial.println(in);
+      
+    }
+    
+   for (int index = 768; index >1; index--) {
+      in = map(index,0,1023,0,255);
+      analogWrite(led_pin, in);
+      Serial.println(index);
+    }
+    analogWrite(led_pin, 0);
+    Serial.print("for  exec ");
+    Serial.println(count++);
+}
